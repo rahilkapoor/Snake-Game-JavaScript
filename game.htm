@@ -1,0 +1,102 @@
+<canvas id="canvas" height="625" width="625"></canvas>
+<script type="text/javascript">
+	window.onload = function(){
+		canvas = document.getElementById("canvas");
+		cxt = canvas.getContext("2d")
+
+		//key pressing events
+		document.addEventListener("keydown",keyPush)
+
+		//frame rate of the game
+		setInterval(game, 3000 / 15)
+	}
+
+	//velocity of snake
+	xv=yv=0;
+
+	//position of snake
+	px=py=10;
+
+	//positon of apple
+	ax=ay=15;
+
+	//grid size and tile size
+	gs=tc=25;
+
+	//length of snake
+	tail=5;
+
+	//current body of snake
+	trail=[];
+
+	function game(){
+		//velocity to snake
+		px+=xv;
+		py+=yv;
+
+		//border portals
+		if (px<0)
+			px=tc-1
+		if (px>tc-1)
+			px=0
+		if (py<0)
+			py=tc-1
+		if (py>tc-1)
+			py=0;
+
+		//display canvas
+		cxt.fillStyle = "black"
+		cxt.fillRect(0, 0, canvas.height, canvas.width)
+
+		//display of the apple on the canvas
+		cxt.fillStyle = "red"
+		cxt.fillRect(ax*gs, ay*gs, gs-2, gs-2)
+
+		//display of the snake on the canvas
+		cxt.fillStyle = "green"
+		for(var i=0; i<trail.length; i++){
+			cxt.fillRect(trail[i].x*gs, trail[i].y*gs, gs-2, gs-2)
+
+			//if snake touches itself
+			if (trail[i].x == px && trail[i].y == py){
+				tail = 5;
+			}
+		}
+
+		//to increment position of his body in trail
+		trail.push({ x:px , y:py });
+
+		//to increase body size of snake
+		while(trail.length>tail){
+			trail.shift()
+		}
+
+		//if snake touches apple
+		if (px==ax && py==ay){
+			tail += 1;
+			ax=Math.floor(Math.random()*tc)
+			ay=Math.floor(Math.random()*tc)
+		}
+	}
+
+	function keyPush(evt) {
+		//when an key is pressed for the movement of the snake
+		switch(evt.keyCode)
+		{
+			case 37:
+				xv=-1,yv=0;
+				break;
+			case 38:
+				xv=0,yv=-1;
+				break;
+			case 39:
+				xv=1,yv=0;
+				break;
+			case 40:
+				xv=0,yv=1;
+				break;
+		}
+	}
+
+
+</script>
